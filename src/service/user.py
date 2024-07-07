@@ -1,4 +1,6 @@
 import bcrypt
+import random
+import time
 from jose import jwt
 from datetime import datetime, timedelta
 
@@ -14,6 +16,7 @@ class UserService:
         )
         return hashed_password.decode(self.encoding)
 
+
     def verify_password(
         self, plain_password: str, hashed_password: str
         ) -> bool:
@@ -22,6 +25,7 @@ class UserService:
                 plain_password.encode(self.encoding),
                 hashed_password.encode(self.encoding)
             )
+    
 
     def create_jwt(self, username: str) -> str:
         return jwt.encode(
@@ -33,6 +37,7 @@ class UserService:
             algorithm=self.jwt_algorithm
         )
     
+
     def decode_jwt(self, access_token: str) -> str:
         payload: dict = jwt.decode(
             access_token, self.secret_key, algorithms=[self.jwt_algorithm]    
@@ -40,3 +45,13 @@ class UserService:
 
         # expire 
         return payload["sub"]   # username
+    
+
+    @staticmethod
+    def create_otp() -> int:
+        return random.randint(1000, 9999)
+    
+    @staticmethod
+    def send_email_to_user(email: str) -> None:
+        time.sleep(10)
+        print(f"Sending email to {email}!")
